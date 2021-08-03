@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Bilibili短链生成器</title>
-  <meta name="keywords" content="哔哩哔哩, bilibili, 短链生成">
-  <meta name="description" content="生成b23.tv格式的短链">
+  <meta name="keywords" content="b23.tv,b23tv,哔哩哔哩,哔哩哔哩短链,短链接, bilibili, 短链生成,b站短链,b站怎么生产那个btv23短链接？">
+  <meta name="description" content="生成b23.tv格式的短链，b站怎么生产那个btv23短链接">
   <link href="https://cdn.bootcss.com" rel="dns-prefetch">
   <link href="https://cdn.jsdelivr.net" rel="dns-prefetch">
   <link href="https://fonts.googleapis.com" rel="dns-prefetch">
@@ -42,6 +42,7 @@
              placeholder="https://www.bilibili.com/video/BV1Wv41157Wz">
       <svg class="close-icon" v-show="closeIconVisible" @click="clearInput" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--mdi" width="32" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41z" fill="currentColor"></path></svg>
     </div>
+    <div class="tips">仅支持B站站内链接，不支持B站站外链接</div>
 
     <div class="submit-btn" id="submit" @click="handleSubmit">生成短链</div>
     <div class="submit-btn" id="submit10" @click="handleBatchSubmit">直接来十个</div>
@@ -75,14 +76,15 @@
 </div>
 
 <script type="module">
+  // const baseUrl = 'http://localhost:5000/'
+  const baseUrl = 'https://service-ijd4slqi-1253419200.gz.apigw.tencentcs.com/release/'
   import { createApp } from 'https://cdn.jsdelivr.net/npm/petite-vue@0.2.3/dist/petite-vue.es.js'
   createApp({
     // exposed to all expressions
     inputUrl: '',
     closeIconVisible: false,
-    //dev 'http://localhost:5000/short_url?url='
     defaultValue: 'https://www.bilibili.com/video/BV1Wv41157Wz',
-    baseUrl: 'https://service-ijd4slqi-1253419200.gz.apigw.tencentcs.com/release/bsu?url=',
+    baseUrl: baseUrl + 'bsu?url=',
     loadingVisible: false,
     limit: 10,
     list: [],
@@ -120,7 +122,7 @@
     handleSubmit() {
       this.toggleLoading(true)
       let value = this.inputUrl? this.inputUrl : this.defaultValue
-      const url = this.baseUrl + encodeURIComponent(value)
+      const url = this.baseUrl + encodeURIComponent(value)+'&href='+location.href
       fetch(url).then(res => res.json()).then(res => {
         this.handleResults(res, true)
       }).finally(() => {
@@ -130,7 +132,7 @@
     handleBatchSubmit() {
       this.toggleLoading(true)
       let value = this.inputUrl? this.inputUrl : this.defaultValue
-      const url = this.baseUrl + encodeURIComponent(value)
+      const url = this.baseUrl + encodeURIComponent(value)+'&href='+location.href
       for (let i = 0; i < this.limit; i++) {
         fetch(url).then(res => res.json()).then(res => {
           this.handleResults(res, false)
